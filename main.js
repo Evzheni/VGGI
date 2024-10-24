@@ -59,11 +59,15 @@ function ShaderProgram(name, program) {
  * way to draw with WebGL.  Here, the geometry is so simple that it doesn't matter.)
  */
 function draw() { 
-    gl.clearColor(0,0,0,1);
+    gl.clearColor(0, 0, 0, 1);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     
-    /* Set the values of the projection transformation */
-    let projection = m4.perspective(Math.PI/8, 1, 8, 12); 
+    // Визначте розміри канвасу
+    const canvas = document.getElementById("webglcanvas");
+    const aspectRatio = canvas.clientWidth / canvas.clientHeight;
+    
+    // Встановіть значення проекції
+    let projection = m4.perspective(Math.PI / 8, aspectRatio, 8, 12); 
     
     /* Get the view matrix from the SimpleRotator object.*/
     let modelView = spaceball.getViewMatrix();
@@ -86,17 +90,50 @@ function draw() {
     surface.Draw();
 }
 
-function CreateSurfaceData()
-{
-    let vertexList = [];
+function CreateSurfaceData() {
+    const R1 = 8; 
+    const R2 = 12; 
+    const phi = Math.PI / 6; 
+    let a = R2 - R1; 
+    let c, b; 
+    let vertices = [];
+   
+    if ((phi > 0 && a > 0) || (phi < 0 && a < 0)) {
+        c = (2 * Math.PI * a) / Math.tan(phi); 
+        b = c / 4;
+    } else {
+        c = -(2 * Math.PI * a) / Math.tan(phi); 
+        b = 3 * c / 4;
+    } 
 
-    for (let i=0; i<360; i+=5) {
-        vertexList.push( Math.sin(deg2rad(i)), 1, Math.cos(deg2rad(i)) );
-        vertexList.push( Math.sin(deg2rad(i)), 0, Math.cos(deg2rad(i)) );
+    const steps = 30; 
+    const thetaStep = Math.PI * 2; 
+    
+    for (let i = 0; i <= steps; i++) {
+        const z = (b / steps) * i;
+
+        for (let j = 0; j <= steps; j++) {
+            const theta = (thetaStep / steps) * j; 
+            const r = a * (1 - Math.cos(2 * Math.PI * z / c)) + R1;
+            const x = r * Math.cos(theta); 
+            const y = r * Math.sin(theta);
+            vertices.push(x*0.1, y*0.1, z*0.1); 
+        }
     }
-
-    return vertexList;
-}
+    vertices.push(NaN, NaN, NaN);
+    for (let j = 0; j <= steps; j++) {
+        const theta = (thetaStep / steps) * j; 
+        for (let i = 0; i <= steps; i++) {
+            const z = (b / steps) * i; 
+            const r = a * (1 - Math.cos(2 * Math.PI * z / c)) + R1;
+            const x = r * Math.cos(theta); 
+            const y = r * Math.sin(theta); 
+            vertices.push(x * 0.1, y * 0.1, z * 0.1); 
+        }
+        vertices.push(NaN, NaN, NaN);
+    }
+    return vertices;
+}  
 
 
 /* Initialize the WebGL context. Called from init() */
