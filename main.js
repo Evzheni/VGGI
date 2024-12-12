@@ -46,15 +46,6 @@ function initGL() {
     gl.enable(gl.DEPTH_TEST);
 }
 
-
-/* Creates a program for use in the WebGL context gl, and returns the
- * identifier for that program.  If an error occurs while compiling or
- * linking the program, an exception of type Error is thrown.  The error
- * string contains the compilation or linking error.  If no error occurs,
- * the program identifier is the return value of the function.
- * The second and third parameters are strings that contain the
- * source code for the vertex shader and for the fragment shader.
- */
 function createProgram(gl, vShader, fShader) {
     let vsh = gl.createShader(gl.VERTEX_SHADER);
     gl.shaderSource(vsh, vShader);
