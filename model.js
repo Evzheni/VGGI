@@ -143,47 +143,6 @@ class Surface {
         return vertices;
     }
 
-    calculateTangent(triangles, tangents, renderVertices){
-        for (let i=0; i<triangles.length; i++) {
-            let currTriangle = triangles[i];
-            let v0ind = currTriangle.v0;
-            let v1ind = currTriangle.v1;
-            let v2ind = currTriangle.v2;
-    
-            let v0 = renderVertices[v0ind];
-            let v1 = renderVertices[v1ind];
-            let v2 = renderVertices[v2ind];
-    
-            let tangent = this.getTangent(v0, v1, v2); 
-            v0.tangent = tangent;
-            v1.tangent = tangent;
-            v2.tangent = tangent;
-            triangles[i].tangent = tangent;
-    
-            tangents.push(tangent, tangent, tangent);
-        }
-    }
-
-    getTangent(v0, v1, v2) {
-        let edge1 = [v1.p[0] - v0.p[0], v1.p[1] - v0.p[1], v1.p[2] - v0.p[2]];
-        let edge2 = [v2.p[0] - v0.p[0], v2.p[1] - v0.p[1], v2.p[2] - v0.p[2]];
-    
-        let uv1 = [v1.t[0] - v0.t[0], v1.t[1] - v0.t[1]];
-        let uv2 = [v2.t[0] - v0.t[0], v2.t[1] - v0.t[1]];
-    
-        let det = (uv1[0] * uv2[1] - uv1[1] * uv2[0]);
-    
-        let Tx = (edge1[0] * uv2[1] - edge2[0] * uv1[1]) / det;
-        let Ty = (edge1[1] * uv2[1] - edge2[1] * uv1[1]) / det;
-        let Tz = (edge1[2] * uv2[1] - edge2[2] * uv1[1]) /det;
-    
-        let tangent = [Tx, Ty, Tz];
-        return tangent;
-    }   
-    
-
-
-
     createTriangle(
         v0ind,
         v1ind,
@@ -279,6 +238,43 @@ class Surface {
         );
     }
 
+    calculateTangent(triangles, tangents, renderVertices){
+        for (let i=0; i<triangles.length; i++) {
+            let currTriangle = triangles[i];
+            let v0ind = currTriangle.v0;
+            let v1ind = currTriangle.v1;
+            let v2ind = currTriangle.v2;
+    
+            let v0 = renderVertices[v0ind];
+            let v1 = renderVertices[v1ind];
+            let v2 = renderVertices[v2ind];
+    
+            let tangent = this.getTangent(v0, v1, v2); 
+            v0.tangent = tangent;
+            v1.tangent = tangent;
+            v2.tangent = tangent;
+            triangles[i].tangent = tangent;
+    
+            tangents.push(tangent, tangent, tangent);
+        }
+    }
+
+    getTangent(v0, v1, v2) {
+        let edge1 = [v1.p[0] - v0.p[0], v1.p[1] - v0.p[1], v1.p[2] - v0.p[2]];
+        let edge2 = [v2.p[0] - v0.p[0], v2.p[1] - v0.p[1], v2.p[2] - v0.p[2]];
+    
+        let uv1 = [v1.t[0] - v0.t[0], v1.t[1] - v0.t[1]];
+        let uv2 = [v2.t[0] - v0.t[0], v2.t[1] - v0.t[1]];
+    
+        let det = (uv1[0] * uv2[1] - uv1[1] * uv2[0]);
+    
+        let Tx = (edge1[0] * uv2[1] - edge2[0] * uv1[1]) / det;
+        let Ty = (edge1[1] * uv2[1] - edge2[1] * uv1[1]) / det;
+        let Tz = (edge1[2] * uv2[1] - edge2[2] * uv1[1]) /det;
+    
+        let tangent = [Tx, Ty, Tz];
+        return tangent;
+    }   
     
     prepareData(renderVertices, allTriangles, normals, tangents) {
         this.data.textCoordF32 = new Float32Array(renderVertices.length * 2);
