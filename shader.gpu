@@ -14,7 +14,7 @@ varying mat3 TBN;
 
 void main() {
     vec3 tangent = normalize(mat3(ModelViewMatrix) * tangent);
-    normal = normalize(normal - dot(normal, tangent) * tangent);
+    vec3 normal = normalize(normal - dot(normal, tangent) * tangent);
     vec3 bitangent = cross(normal, tangent);
     TBN = mat3(tangent, bitangent, normal);
 
