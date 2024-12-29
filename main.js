@@ -20,9 +20,14 @@ function ShaderProgram(name, program) {
     this.prog = program;
     this.iAttribVertex = -1;
     this.iAttribNormal = -1;
-    this.iColor = -1;
+    this.iAttribTextureCoord = -1;
+    this.iAttribTangent = -1;
     this.iModelViewProjectionMatrix = -1;
+    this.iModelViewMatrix  = -1;
+    this.iColor = -1;
     this.iLightPos = -1;
+    this.iViewPos = -1;
+
     this.Use = function() {
         gl.useProgram(this.prog);
     }
@@ -38,9 +43,9 @@ function updateLightPosition() {
     if (angle > 2 * Math.PI) {
         angle -= 2 * Math.PI; 
     }
-    let x = radius * Math.cos(angle);  
-    let y = lightHeight;  
-    let z = radius * Math.sin(angle); 
+    let x = 5;  
+    let y = 30;  
+    let z = -5; 
     return [x, y, z];
 }
 
@@ -64,8 +69,12 @@ function draw() {
     let matAccum1 = m4.multiply(translateToPointZero, matAccum0);
 
     let modelViewProjectionMatrix = m4.multiply(projection, matAccum1);
-    gl.uniformMatrix4fv(shProgram.iModelViewProjectionMatrix, false, modelViewProjectionMatrix);
+
+    gl.uniform3fv(shProgram.iLightPos, lightPos);
     gl.uniform4fv(shProgram.iColor, [1.0, 1.0, 1.0, 1.0]);
+    gl.uniformMatrix4fv(shProgram.iModelViewProjectionMatrix, false, modelViewProjectionMatrix);
+    gl.uniformMatrix4fv(shProgram.iModelViewMatrix, false, matAccum1);
+    gl.uniform3fv(shProgram.iViewPos, [0.0, 0.0, 1.0]);
 
     surface.model.draw(); 
 }
@@ -76,17 +85,25 @@ function initGL() {
     shProgram = new ShaderProgram('Basic', prog);
     shProgram.Use();
 
-    shProgram.iAttribVertex = gl.getAttribLocation(prog, "vertex");
-    shProgram.iAttribNormal = gl.getAttribLocation(prog, "normal");
+    shProgram.iAttribVertex              = gl.getAttribLocation(prog, "vertex");
+    shProgram.iAttribNormal              = gl.getAttribLocation(prog, "normal");
+    shProgram.iAttribTextureCoord        = gl.getAttribLocation(prog, "texCoord");
+    shProgram.iAttribTangent              = gl.getAttribLocation(prog, "tangent");
     shProgram.iModelViewProjectionMatrix = gl.getUniformLocation(prog, "ModelViewProjectionMatrix");
-    shProgram.iColor = gl.getUniformLocation(prog, "color");
-    shProgram.iLightPos = gl.getUniformLocation(prog, "lightPos");
+    shProgram.iModelViewMatrix           = gl.getUniformLocation(prog, "ModelViewMatrix");
+    shProgram.iColor                     = gl.getUniformLocation(prog, "color");
+    shProgram.iLightPos                  = gl.getUniformLocation(prog, "lightPos");
+    shProgram.iViewPos                   = gl.getUniformLocation(prog, "viewPos");
 
     surface = new Surface();
     surface.createSurfaceData();
 
     let model = new Model('Surface');
-    model.bufferData(surface.data.verticesF32, surface.data.indicesU16, surface.data.normalsF32);
+    model.bufferData(surface.data.verticesF32, surface.data.indicesU16, surface.data.normalsF32, surface.data.textCoordF32, surface.data.tangentsF32);
+    surface.iTextureDiffuse  = LoadTexture('textures/Diffuse.png');
+    surface.iTextureSpecular = LoadTexture('textures/Specular.png');
+    surface.iTextureNormal = LoadTexture('textures/Normal.png');
+    
     surface.model = model; 
 
     gl.enable(gl.DEPTH_TEST);

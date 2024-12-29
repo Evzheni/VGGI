@@ -5,7 +5,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&display=swap" rel="stylesheet">
-    <title>PA2</title>
+    <title>PA3</title>
     <style>
         body {
             background-color: #EEEEEE;
@@ -101,13 +101,13 @@
             <h3>Granularity</h3>
             <div class="values">
                 <label for="u">U </label>
-                <input class="rangeuv" type="range" id="u" value="20" min="3" max="60" oninput="updateValues()">
-                <p id="uValue">20</p>
+                <input class="rangeuv" type="range" id="u" value="210" min="3" max="300" oninput="updateValues()">
+                <p id="uValue">210</p>
             </div>
             <div class="values">
                 <label for="v">V </label>
-                <input class="rangeuv" type="range" id="v" value="10" min="3" max="60" oninput="updateValues()">
-                <p id="vValue">10</p>
+                <input class="rangeuv" type="range" id="v" value="30" min="3" max="100" oninput="updateValues()">
+                <p id="vValue">30</p>
             </div>
         </div>
     </div>
@@ -117,6 +117,7 @@
     <script src="./shader.gpu"></script>
     <script src="./main.js"></script>
     <script src="./model.js"></script>
+    <script src="./TextureHandler.js"></script>
     <script>
         function updateValues() {
             const u = document.getElementById('u').value;
