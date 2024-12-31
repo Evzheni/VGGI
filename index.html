@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&display=swap" rel="stylesheet">
-    <title>PA2</title>
+    <title>CGW</title>
     <style>
         body {
             background-color: #EEEEEE;
@@ -34,6 +33,9 @@
             border-radius: 10px;
             background-color: #adb1cf;
             padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
 
         }
 
@@ -87,28 +89,54 @@
             border: 1px solid rgb(47, 0, 255);
             box-shadow: -407px 0 0 400px rgb(47, 0, 255);
         }
+        #aValue{
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            width: 16px;
+        }
     </style>
 </head>
 
 <body onload="init()">
+
     <h2 id="centered">A Surface of Conjugation of Coaxial Cylinder and Cone</h2>
     <p id="centered">Drag your mouse on the cube to rotate it.<br>(On a touch screen, you can use your finger)</p>
     <div class="project">
         <div id="canvas-holder">
-            <canvas width="1200" height="600" id="webglcanvas" style="background-color:red"></canvas>
+            <canvas width="1100" height="600" id="webglcanvas" style="background-color:red"></canvas>
         </div>
         <div class="granularity">
             <h3>Granularity</h3>
             <div class="values">
                 <label for="u">U </label>
-                <input class="rangeuv" type="range" id="u" value="20" min="3" max="60" oninput="updateValues()">
-                <p id="uValue">20</p>
+                <input class="rangeuv" type="range" id="u" value="150" min="3" max="200" oninput="updateValues()">
+                <p id="uValue">150</p>
             </div>
             <div class="values">
                 <label for="v">V </label>
-                <input class="rangeuv" type="range" id="v" value="10" min="3" max="60" oninput="updateValues()">
-                <p id="vValue">10</p>
+                <input class="rangeuv" type="range" id="v" value="30" min="3" max="100" oninput="updateValues()">
+                <p id="vValue">30</p>
             </div>
+            <h3>Angle</h3>
+            <div class="values">
+                <input type="range" class="rangeuv" id="angleSlider" value="1" min="0" max="360" step="5" oninput="updateValues()"><br>
+                <span id="aValue"><p id="angValue">0</p><span>°</span></span>
+            </div>
+            <div id="pointInfo">
+                <p>Точка обертання: <span id="rotationPoint">[0, 0]</span></p>
+            </div>
+            <script>
+                function updateValues() {
+                    const u = document.getElementById('u').value;
+                    const v = document.getElementById('v').value;
+                    const ang = document.getElementById('angleSlider').value;
+                    document.getElementById('uValue').textContent = u;
+                    document.getElementById('vValue').textContent = v;
+                    document.getElementById('angValue').textContent = ang;
+                }
+            </script>
+
         </div>
     </div>
 
@@ -117,14 +145,7 @@
     <script src="./shader.gpu"></script>
     <script src="./main.js"></script>
     <script src="./model.js"></script>
-    <script>
-        function updateValues() {
-            const u = document.getElementById('u').value;
-            const v = document.getElementById('v').value;
-            document.getElementById('uValue').textContent = u;
-            document.getElementById('vValue').textContent = v;
-        }
-    </script>
+    <script src="./TextureHandler.js"></script>
 </body>
 
 </html>
